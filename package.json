@@ -2,7 +2,8 @@
   "name": "portfolio",
   "version": "1.0.0",
   "description": "\"# portfolio\"",
-  "main": "index.js",
+  "main": "server.js",
+  "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/IThordGray/portfolio/issues"
   },
-  "homepage": "https://github.com/IThordGray/portfolio#readme"
+  "homepage": "https://github.com/IThordGray/portfolio#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
