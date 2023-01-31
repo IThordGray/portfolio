@@ -1,22 +1,27 @@
 import { Sprite } from "./sprite";
 
 export class ImageSprite extends Sprite {
-    #maxFrames = 1;
-    #img = new Image();
+  #maxFrames = 1;
+  #img = new Image();
 
-    get img() { return this.#img; }
-    get maxFrames() { return this.#maxFrames; }
+  get img() {
+    return this.#img;
+  }
 
-    set src(value) {
-        this.#img.src = value;
-        this.width = this.#img.width / this.#maxFrames;
-        this.height = this.#img.height;
-    }
+  get maxFrames() {
+    return this.#maxFrames;
+  }
 
-    constructor(args) {
-        super(args);
+  set src(value) {
+    this.#img.src = value;
+    this.width = this.#img.width / this.#maxFrames;
+    this.height = this.#img.height;
+  }
 
-        if (args.frames) this.#maxFrames = args.frames;
-        if (args.src) this.src = args.src;
-    }
+  constructor(args) {
+    super(args);
+
+    if (args.frames) this.#maxFrames = args.frames;
+    if (args.src) this.src = args.src;
+  }
 }

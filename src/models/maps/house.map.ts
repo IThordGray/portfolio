@@ -6,13 +6,13 @@ import { ForegroundSprite } from "../sprites/foreground.sprite";
 import { GameMap } from "./game-map";
 
 export class HouseMap extends GameMap {
-  constructor(args = { spawnCoordinate: { x: 440, y: -40 }, direction: 'up' }) {
+  constructor(args = { spawnCoordinate: { x: 440, y: -40 }, direction: "up" }) {
     super(args);
   }
 
   getBackground() {
     return new BackgroundSprite({
-      src: 'assets/house_background.png',
+      src: "assets/house_background.png",
       position: this.offset
     });
   }
@@ -26,7 +26,7 @@ export class HouseMap extends GameMap {
 
   getForeground() {
     return new ForegroundSprite({
-      src: 'assets/house_foreground.png',
+      src: "assets/house_foreground.png",
       position: this.offset
     });
   }

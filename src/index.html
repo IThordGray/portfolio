@@ -86,35 +86,35 @@
 </style>
 
 <div class="container">
-    <canvas></canvas>
+  <canvas></canvas>
 
-    <div class="menu-container">
-        <nav class="menu">
-            <div class="menu-item" item="about">About</div>
-            <div class="menu-item" item="skills">Skills</div>
-            <div class="menu-item" item="contact">Contact</div>
-            <div class="menu-item" item="linkedin">LinkedIn</div>
-            <div class="menu-item" item="git">Git</div>
-        </nav>
-    </div>
+  <div class="menu-container">
+    <nav class="menu">
+      <div class="menu-item" item="about">About</div>
+      <div class="menu-item" item="skills">Skills</div>
+      <div class="menu-item" item="contact">Contact</div>
+      <div class="menu-item" item="linkedin">LinkedIn</div>
+      <div class="menu-item" item="git">Git</div>
+    </nav>
+  </div>
 </div>
 
 <div style="display: none;">
-    <div class="contact-form-container">
-        <form id="contact-form" class="contact-form">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
+  <div class="contact-form-container">
+    <form class="contact-form" id="contact-form">
+      <label for="name">Name:</label>
+      <input id="name" name="name" required type="text">
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+      <label for="email">Email:</label>
+      <input id="email" name="email" required type="email">
 
-            <label for="message">Message:</label>
-            <textarea style="flex-grow: 1;" id="message" name="message" required></textarea>
+      <label for="message">Message:</label>
+      <textarea id="message" name="message" required style="flex-grow: 1;"></textarea>
 
-            <div style="display: flex; gap: 1rem; justify-content: space-between;">
-                <input class="btn" type="reset" value="Cancel">
-                <input class="btn success" type="submit" value="Submit">
-            </div>
-        </form>
-    </div>
+      <div style="display: flex; gap: 1rem; justify-content: space-between;">
+        <input class="btn" type="reset" value="Cancel">
+        <input class="btn success" type="submit" value="Submit">
+      </div>
+    </form>
+  </div>
 </div>

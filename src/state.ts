@@ -4,61 +4,61 @@ import { ConfirmDialog } from "./models/sprites/confirm.dialog";
 import { DisplayDialog } from "./models/sprites/display.dialog";
 
 export const MAPS = {
-    'main': MainMap,
-    'house': HouseMap
+  "main": MainMap,
+  "house": HouseMap
 };
 
 export class State {
-    #currentMap;
-    #openedDialog;
-    #openedConfirmation;
+  #currentMap;
+  #openedDialog;
+  #openedConfirmation;
 
-    canvas;
-    ctx;
-    
-    showCoords = true;
-    debug = true;
+  canvas;
+  ctx;
 
-    get currentMap() {
-        return this.#currentMap;
-    }
+  showCoords = true;
+  debug = true;
 
-    set currentMap(value) {
-        this.#currentMap?.destroy();
-        this.#currentMap = value;
-        this.#currentMap.animate();
-        this.#currentMap.paused = false;
-    }
+  get currentMap() {
+    return this.#currentMap;
+  }
 
-    closeAllDialogs() {
-        this.#openedDialog?.close()
-        this.#openedConfirmation?.close();
-    }
+  set currentMap(value) {
+    this.#currentMap?.destroy();
+    this.#currentMap = value;
+    this.#currentMap.animate();
+    this.#currentMap.paused = false;
+  }
 
-    openDialogAsync(content) {
-        return new Promise(res => {
-            if (this.#openedDialog) this.#openedDialog.close();
-            if (this.#openedConfirmation) this.#openedConfirmation.close(false);
+  closeAllDialogs() {
+    this.#openedDialog?.close();
+    this.#openedConfirmation?.close();
+  }
 
-            this.showCoords = false;
-            this.#openedDialog = new DisplayDialog();
-            const dialogRef = this.#openedDialog.open(content);
-            dialogRef.onClose = (args) => {
-                this.showCoords = true;
-                res(args);
-            };
-        });
+  openDialogAsync(content) {
+    return new Promise(res => {
+      if (this.#openedDialog) this.#openedDialog.close();
+      if (this.#openedConfirmation) this.#openedConfirmation.close(false);
 
-    }
+      this.showCoords = false;
+      this.#openedDialog = new DisplayDialog();
+      const dialogRef = this.#openedDialog.open(content);
+      dialogRef.onClose = (args) => {
+        this.showCoords = true;
+        res(args);
+      };
+    });
 
-    openPromptAsync(msg) {
-        return new Promise(res => {
-            if (this.#openedDialog) this.#openedDialog.close();
-            if (this.#openedConfirmation) this.#openedConfirmation.close(false);
+  }
 
-            this.#openedConfirmation = new ConfirmDialog();
-            const dialogRef = this.#openedConfirmation.open(msg);
-            dialogRef.onClose = (args) => res(args);
-        });
-    }
+  openPromptAsync(msg) {
+    return new Promise(res => {
+      if (this.#openedDialog) this.#openedDialog.close();
+      if (this.#openedConfirmation) this.#openedConfirmation.close(false);
+
+      this.#openedConfirmation = new ConfirmDialog();
+      const dialogRef = this.#openedConfirmation.open(msg);
+      dialogRef.onClose = (args) => res(args);
+    });
+  }
 }

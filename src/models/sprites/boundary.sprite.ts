@@ -2,8 +2,8 @@ import { checkCollide, state } from "../../global-constants";
 import { Sprite } from "./sprite";
 
 const BOUNDARY_COLORS = {
-  collision: 'rgba(255, 0, 0, 0.5)',
-  transition: 'rgba(255, 0, 255, 0.5)'
+  collision: "rgba(255, 0, 0, 0.5)",
+  transition: "rgba(255, 0, 255, 0.5)"
 };
 
 export class BoundarySprite extends Sprite {
@@ -11,12 +11,12 @@ export class BoundarySprite extends Sprite {
   #type;
   #meta;
 
-  get type() {
-    return this.#type;
-  }
-
   get meta() {
     return this.#meta;
+  }
+
+  get type() {
+    return this.#type;
   }
 
   constructor(args) {

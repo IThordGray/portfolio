@@ -1,23 +1,40 @@
 import { state } from "../../global-constants";
 
 export class Sprite {
-    #position;
-    height;
-    width;
+  #position;
+  height;
+  width;
 
-    padding = 24;
+  padding = 24;
 
-    get bottom() { return this.#position.y + this.height; }
-    get left() { return this.#position.x; }
-    get position() { return this.#position; }
-    get right() { return this.#position.x + this.width }
-    get top() { return this.#position.y; }
+  get bottom() {
+    return this.#position.y + this.height;
+  }
 
-    get ctx() { return state.ctx; }
+  get ctx() {
+    return state.ctx;
+  }
 
-    constructor({ position }: { position?: any }) {
-        this.#position = { ...position ?? { x: 0, y: 0 } };
-    }
+  get left() {
+    return this.#position.x;
+  }
 
-    draw() { }
+  get position() {
+    return this.#position;
+  }
+
+  get right() {
+    return this.#position.x + this.width;
+  }
+
+  get top() {
+    return this.#position.y;
+  }
+
+  constructor({ position }: { position?: any }) {
+    this.#position = { ...position ?? { x: 0, y: 0 } };
+  }
+
+  draw() {
+  }
 }
