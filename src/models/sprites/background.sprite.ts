@@ -1,13 +1,15 @@
-import { state } from "../../global-constants";
-import { ImageSprite } from "./image.sprite";
+import { state } from '../../global-constants';
+import { IImageSpriteOptions, ImageSprite } from './image.sprite';
+
+export type IBackgroundSpriteOptions = IImageSpriteOptions;
 
 export class BackgroundSprite extends ImageSprite {
-  constructor(args) {
+  constructor(args: IBackgroundSpriteOptions) {
     super(args);
   }
 
-  draw() {
-    state.ctx.fillStyle = "black";
+  override draw(): void {
+    state.ctx.fillStyle = 'black';
     state.ctx.fillRect(0, 0, state.canvas.width, state.canvas.height);
     state.ctx.drawImage(this.img, this.position.x, this.position.y);
   }

@@ -1,5 +1,5 @@
 export class SpriteAnimation {
-  #spriteFrames;
+  readonly #spriteFrames;
   #elapsedTicks = 0;
   #animate = false;
   #currentSpriteFrame = 0;
@@ -10,13 +10,13 @@ export class SpriteAnimation {
     this.#spriteFrames = spriteFrames;
   }
 
-  getCropCoordinates() {
+  getCropCoordinates(): { sx: number; sy: number } {
     const sx = this.#currentSpriteFrame * this.imgWidth;
     const sy = 0;
     return { sx, sy };
   }
 
-  increaseTick() {
+  increaseTick(): void {
     if (!this.#animate) return;
 
     if (this.#spriteFrames > 1) this.#elapsedTicks++;
@@ -27,11 +27,11 @@ export class SpriteAnimation {
       : 0;
   }
 
-  start() {
+  start(): void {
     this.#animate = true;
   }
 
-  stop() {
+  stop(): void {
     this.#animate = false;
   }
 }

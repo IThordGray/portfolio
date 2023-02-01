@@ -1,23 +1,17 @@
-import { HouseMap } from "./models/maps/house.map";
-import { MainMap } from "./models/maps/main.map";
-import { ConfirmDialog } from "./models/sprites/confirm.dialog";
-import { DisplayDialog } from "./models/sprites/display.dialog";
-
-export const MAPS = {
-  "main": MainMap,
-  "house": HouseMap
-};
+import { GameMap } from './models/maps/game-map';
+import { ConfirmDialog } from './models/sprites/confirm.dialog';
+import { DisplayDialog } from './models/sprites/display.dialog';
 
 export class State {
-  #currentMap;
-  #openedDialog;
-  #openedConfirmation;
+  #currentMap: GameMap;
+  #openedDialog: DisplayDialog;
+  #openedConfirmation: ConfirmDialog;
 
-  canvas;
-  ctx;
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
 
   showCoords = true;
-  debug = true;
+  debug = this.#getDebugConfig();
 
   get currentMap() {
     return this.#currentMap;
@@ -30,12 +24,19 @@ export class State {
     this.#currentMap.paused = false;
   }
 
-  closeAllDialogs() {
+  #getDebugConfig(): boolean {
+    const qs = location.search;
+    const params = new URLSearchParams(qs);
+    const debug = params.get('debug');
+    return debug?.trim()?.toLowerCase() === 'true';
+  }
+
+  closeAllDialogs(): void {
     this.#openedDialog?.close();
     this.#openedConfirmation?.close();
   }
 
-  openDialogAsync(content) {
+  openDialogAsync(content: HTMLElement): Promise<unknown> {
     return new Promise(res => {
       if (this.#openedDialog) this.#openedDialog.close();
       if (this.#openedConfirmation) this.#openedConfirmation.close(false);
@@ -48,10 +49,9 @@ export class State {
         res(args);
       };
     });
-
   }
 
-  openPromptAsync(msg) {
+  openPromptAsync(msg: string): Promise<unknown> {
     return new Promise(res => {
       if (this.#openedDialog) this.#openedDialog.close();
       if (this.#openedConfirmation) this.#openedConfirmation.close(false);

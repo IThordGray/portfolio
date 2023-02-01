@@ -1,31 +1,35 @@
-import { Direction } from "../../abstractions/direction.type";
-import { Sprites } from "../../abstractions/sprites.type";
-import { SpriteAnimation } from "../../compositions/sprite-animation";
-import { state } from "../../global-constants";
-import { ImageSprite } from "./image.sprite";
+import { Direction } from '../../abstractions/direction.type';
+import { Sprites } from '../../abstractions/sprites.type';
+import { SpriteAnimation } from '../../compositions/sprite-animation';
+import { state } from '../../global-constants';
+import { ImageSprite } from './image.sprite';
+import { ISpriteOptions } from './sprite';
 
 type SpriteImages = Record<Direction, HTMLImageElement>;
 
+export interface ICharacterSpriteOptions extends ISpriteOptions {
+  speed?: number;
+  direction?: Direction;
+}
+
 export abstract class CharacterSprite extends ImageSprite {
-  #spriteImages: SpriteImages;
-  #sprites = this.getSprites();
-  #speed: number;
+  readonly #spriteImages: SpriteImages;
+  readonly #speed: number;
   #direction: Direction;
-  spriteAnimation;
+  spriteAnimation: SpriteAnimation;
 
   get speed() {
     return this.#speed;
   }
 
-  get top() {
+  override get top() {
     return super.top + (this.height / 2);
   }
 
-  protected constructor(args) {
+  protected constructor(args: ICharacterSpriteOptions) {
     super({ ...args, frames: 4 });
 
     this.#speed = args.speed;
-    // this.src = this.#sprites[this.#direction];
 
     this.#spriteImages = {} as SpriteImages;
     for (const [ direction, src ] of Object.entries(this.getSprites())) {
@@ -33,13 +37,12 @@ export abstract class CharacterSprite extends ImageSprite {
       this.#spriteImages[direction].src = src;
     }
 
-    this.setSprite(args.direction ?? "down");
-
+    this.setSprite(args.direction ?? 'down');
   }
 
-  draw() {
+  override draw(): void {
     if (state.debug) {
-      state.ctx.fillStyle = "rgba(0, 0, 255, 0.5)";
+      state.ctx.fillStyle = 'rgba(0, 0, 255, 0.5)';
       state.ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
     }
 
@@ -67,7 +70,7 @@ export abstract class CharacterSprite extends ImageSprite {
 
   abstract getSprites(): Sprites;
 
-  setSprite(direction) {
+  setSprite(direction: Direction): void {
     if (this.#direction === direction) return;
 
     this.img = this.#spriteImages[direction];

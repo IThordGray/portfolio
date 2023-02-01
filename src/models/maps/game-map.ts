@@ -1,30 +1,32 @@
-import { checkCollide, inputController, state } from "../../global-constants";
-import { BackgroundSprite } from "../sprites/background.sprite";
-import { BoundarySprite } from "../sprites/boundary.sprite";
-import { CoordsSprite } from "../sprites/coords.sprite";
-import { ForegroundSprite } from "../sprites/foreground.sprite";
-import { NpcSprite } from "../sprites/npc.sprite";
-import { PlayerSprite } from "../sprites/player.sprite";
-import { Sprite } from "../sprites/sprite";
+import { ICoordinate } from '../../abstractions/coord';
+import { checkCollide, inputController, state } from '../../global-constants';
+import { BackgroundSprite } from '../sprites/background.sprite';
+import { BoundarySprite } from '../sprites/boundary.sprite';
+import { CoordsSprite } from '../sprites/coords.sprite';
+import { ForegroundSprite } from '../sprites/foreground.sprite';
+import { NpcSprite } from '../sprites/npc.sprite';
+import { PlayerSprite } from '../sprites/player.sprite';
+import { Sprite } from '../sprites/sprite';
 
 export abstract class GameMap {
+  readonly #playerSprite: PlayerSprite;
+  readonly #bgSprite: BackgroundSprite;
+  readonly #fgSprite: ForegroundSprite;
+  readonly #boundaries: BoundarySprite[] = [];
+  readonly #npcs: NpcSprite[] = [];
+
   #animationFrameId: number;
-  #playerSprite: PlayerSprite;
-  #bgSprite: BackgroundSprite;
-  #fgSprite: ForegroundSprite;
-  #boundaries: BoundarySprite[] = [];
-  #npcs: NpcSprite[] = [];
   #movableSprites: Sprite[];
   #coords = new CoordsSprite();
   moveSpeed = 5;
-  offset;
+  offset: ICoordinate;
   paused = true;
 
   get position() {
     return this.#bgSprite?.position;
   }
 
-  constructor({ spawnCoordinate, direction }) {
+  protected constructor({ spawnCoordinate, direction }) {
     this.offset = { ...spawnCoordinate };
     this.#playerSprite = new PlayerSprite({ direction, speed: this.moveSpeed });
     this.#bgSprite = this.getBackground();
@@ -47,7 +49,7 @@ export abstract class GameMap {
     state.currentMap = this;
   }
 
-  #animateNpcs() {
+  #animateNpcs(): void {
     this.#npcs.forEach(async npc => {
       if (!npc.path?.length) return;
       npc.spriteAnimation?.start();
@@ -68,13 +70,13 @@ export abstract class GameMap {
 
       if (vDirection !== 0) {
         npc.position.y += npc.speed * (vDirection / Math.abs(vDirection));
-        npc.setSprite(vDirection > 1 ? "down" : "up");
+        npc.setSprite(vDirection > 1 ? 'down' : 'up');
         return;
       }
 
       if (hDirection !== 0) {
         npc.position.x += npc.speed * (hDirection / Math.abs(hDirection));
-        npc.setSprite(hDirection > 1 ? "right" : "left");
+        npc.setSprite(hDirection > 1 ? 'right' : 'left');
         return;
       }
 
@@ -82,7 +84,7 @@ export abstract class GameMap {
     });
   }
 
-  #animatePlayer() {
+  #animatePlayer(): void {
     this.#playerSprite.spriteAnimation?.stop();
 
     if (inputController.vertical !== 0) {
@@ -93,15 +95,15 @@ export abstract class GameMap {
         if (collidingBoundary) break;
       }
 
-      if (collidingBoundary?.type === "collision") return;
-      if (collidingBoundary?.type === "transition") {
+      if (collidingBoundary?.type === 'collision') return;
+      if (collidingBoundary?.type === 'transition') {
         this.paused = true;
         const mapExpression = collidingBoundary.meta?.map;
         if (!mapExpression) return;
         new mapExpression();
         return;
       }
-      this.#playerSprite.setSprite(inputController.vertical > 0 ? "up" : "down");
+      this.#playerSprite.setSprite(inputController.vertical > 0 ? 'up' : 'down');
       this.#playerSprite.spriteAnimation?.start();
       this.#movableSprites.forEach(x => {
         x.position.y += inputController.vertical * this.#playerSprite.speed;
@@ -110,10 +112,10 @@ export abstract class GameMap {
     }
 
     if (inputController.horizontal !== 0) {
-      const willCollide = this.#boundaries.some(x => x.type === "collision" && x.getCollide(this.#playerSprite, { hOffset: inputController.horizontal * this.#playerSprite.speed }));
+      const willCollide = this.#boundaries.some(x => x.type === 'collision' && x.getCollide(this.#playerSprite, { hOffset: inputController.horizontal * this.#playerSprite.speed }));
       if (willCollide) return;
 
-      this.#playerSprite.setSprite(inputController.horizontal > 0 ? "right" : "left");
+      this.#playerSprite.setSprite(inputController.horizontal > 0 ? 'right' : 'left');
       this.#playerSprite.spriteAnimation?.start();
       this.#movableSprites.forEach(x => {
         x.position.x -= inputController.horizontal * this.#playerSprite.speed;
@@ -130,17 +132,18 @@ export abstract class GameMap {
     columnNumber,
     collection,
     type,
-    transitionMapper?) {
+    transitionMapper?): void {
+
     if (boundaryValue === 0) return;
 
-    const meta = type === "transition" ? { map: transitionMapper?.(boundaryValue) } : undefined;
+    const meta = type === 'transition' ? { map: transitionMapper?.(boundaryValue) } : undefined;
     const b = new BoundarySprite({ multiplier, type, meta });
     b.position.x = columnNumber * b.width + this.offset.x;
     b.position.y = rowNumber * b.height + this.offset.y;
     collection.push(b);
   }
 
-  animate() {
+  animate(): void {
     this.#animationFrameId = window.requestAnimationFrame(this.animate.bind(this));
 
     if (!this.#bgSprite) return;
@@ -165,9 +168,10 @@ export abstract class GameMap {
     rowLength,
     transitionMapper,
     multiplier = 1
-  ) {
-    const collisions = [];
-    const transitions = [];
+  ): BoundarySprite[] {
+
+    const collisions: BoundarySprite[] = [];
+    const transitions: BoundarySprite[] = [];
 
     for (let i = 0; i < boundaries.collisions.length; i += rowLength) {
       const rowNumber = Math.floor(i / rowLength);
@@ -177,28 +181,28 @@ export abstract class GameMap {
 
       for (let j = 0; j < rowLength; j++) {
         const collisionBoundary = collisionRowData[j];
-        this.#processBoundary(collisionBoundary, multiplier, rowNumber, j, collisions, "collision");
+        this.#processBoundary(collisionBoundary, multiplier, rowNumber, j, collisions, 'collision');
 
         const transitionBoundary = transitionRowData[j];
-        this.#processBoundary(transitionBoundary, multiplier, rowNumber, j, transitions, "transition", transitionMapper);
+        this.#processBoundary(transitionBoundary, multiplier, rowNumber, j, transitions, 'transition', transitionMapper);
       }
     }
 
     return collisions.concat(transitions);
   }
 
-  destroy() {
+  destroy(): void {
     if (!this.#animationFrameId) return;
     window.cancelAnimationFrame(this.#animationFrameId);
   }
 
-  abstract getBackground();
+  abstract getBackground(): BackgroundSprite;
 
-  abstract getBoundaries();
+  abstract getBoundaries(): BoundarySprite[];
 
-  abstract getForeground();
+  abstract getForeground(): ForegroundSprite;
 
-  getNPCs() {
+  getNPCs(): NpcSprite[] {
     return [];
   }
 }

@@ -1,12 +1,14 @@
-import { state } from "../../global-constants";
-import { ImageSprite } from "./image.sprite";
+import { state } from '../../global-constants';
+import { IImageSpriteOptions, ImageSprite } from './image.sprite';
+
+export type IForegroundSpriteOptions = IImageSpriteOptions;
 
 export class ForegroundSprite extends ImageSprite {
-  constructor(args) {
+  constructor(args: IForegroundSpriteOptions) {
     super(args);
   }
 
-  draw() {
+  override draw(): void {
     state.ctx.drawImage(this.img, this.position.x, this.position.y);
   }
 }

@@ -1,9 +1,14 @@
-import { state } from "../../global-constants";
+import { ICoordinate } from '../../abstractions/coord';
+import { state } from '../../global-constants';
 
-export class Sprite {
-  #position;
-  height;
-  width;
+export interface ISpriteOptions {
+  position?: ICoordinate;
+}
+
+export abstract class Sprite {
+  readonly #position: ICoordinate;
+  height: number;
+  width: number;
 
   padding = 24;
 
@@ -31,10 +36,9 @@ export class Sprite {
     return this.#position.y;
   }
 
-  constructor({ position }: { position?: any }) {
-    this.#position = { ...position ?? { x: 0, y: 0 } };
+  constructor(args?: ISpriteOptions) {
+    this.#position = { ...args?.position ?? { x: 0, y: 0 } };
   }
 
-  draw() {
-  }
+  abstract draw();
 }

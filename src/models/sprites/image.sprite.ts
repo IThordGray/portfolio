@@ -1,7 +1,12 @@
-import { Sprite } from "./sprite";
+import { ISpriteOptions, Sprite } from './sprite';
 
-export class ImageSprite extends Sprite {
-  #maxFrames = 1;
+export interface IImageSpriteOptions extends ISpriteOptions {
+  frames?: number;
+  src?: string;
+}
+
+export abstract class ImageSprite extends Sprite {
+  readonly #maxFrames: number;
   img = new Image();
 
   get maxFrames() {
@@ -14,10 +19,10 @@ export class ImageSprite extends Sprite {
     this.height = this.img.height;
   }
 
-  constructor(args) {
+  protected constructor(args: IImageSpriteOptions) {
     super(args);
 
-    if (args.frames) this.#maxFrames = args.frames;
+    this.#maxFrames = args?.frames ?? 1;
     if (args.src) this.src = args.src;
   }
 }

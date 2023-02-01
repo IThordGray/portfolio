@@ -1,8 +1,9 @@
-import { CharacterSprite } from "./character.sprite";
+import { ICoordinate } from '../../abstractions/coord';
+import { CharacterSprite } from './character.sprite';
 
 export abstract class NpcSprite extends CharacterSprite {
-  readonly #path;
-  readonly #onInteractAsync;
+  readonly #path: ICoordinate[];
+  readonly #onInteractAsync: () => Promise<void>;
   #interacting = false;
 
   get interacting() {

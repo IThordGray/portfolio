@@ -1,4 +1,5 @@
-<head><script defer="defer" src="main.js"></script></head><style>@font-face {
+<head><script defer src="main.js"></script></head><style>
+    @font-face {
         font-family: 'press-start';
         src: url('./assets/fonts/PressStart2P-Regular.ttf');
     }
@@ -81,4 +82,39 @@
     .contact-form .btn:active {
         border-bottom-width: 2px;
         transform: translateY(2px);
-    }</style><div class="container"><canvas></canvas><div class="menu-container"><nav class="menu"><div class="menu-item" item="about">About</div><div class="menu-item" item="skills">Skills</div><div class="menu-item" item="contact">Contact</div><div class="menu-item" item="linkedin">LinkedIn</div><div class="menu-item" item="git">Git</div></nav></div></div><div style="display: none;"><div class="contact-form-container"><form class="contact-form" id="contact-form"><label for="name">Name:</label> <input id="name" name="name" required> <label for="email">Email:</label> <input id="email" name="email" required type="email"> <label for="message">Message:</label> <textarea id="message" name="message" required style="flex-grow: 1;"></textarea><div style="display: flex; gap: 1rem; justify-content: space-between;"><input class="btn" type="reset" value="Cancel"> <input class="btn success" type="submit" value="Submit"></div></form></div></div>
+    }
+</style>
+
+<div class="container">
+  <canvas></canvas>
+
+  <div class="menu-container">
+    <nav class="menu">
+      <div class="menu-item" item="about">About</div>
+      <div class="menu-item" item="skills">Skills</div>
+      <div class="menu-item" item="contact">Contact</div>
+      <div class="menu-item" item="linkedin">LinkedIn</div>
+      <div class="menu-item" item="git">Git</div>
+    </nav>
+  </div>
+</div>
+
+<div style="display: none;">
+  <div class="contact-form-container">
+    <form class="contact-form" id="contact-form">
+      <label for="name">Name:</label>
+      <input id="name" name="name" required type="text">
+
+      <label for="email">Email:</label>
+      <input id="email" name="email" required type="email">
+
+      <label for="message">Message:</label>
+      <textarea id="message" name="message" required style="flex-grow: 1;"></textarea>
+
+      <div style="display: flex; gap: 1rem; justify-content: space-between;">
+        <input class="btn" type="reset" value="Cancel">
+        <input class="btn success" type="submit" value="Submit">
+      </div>
+    </form>
+  </div>
+</div>

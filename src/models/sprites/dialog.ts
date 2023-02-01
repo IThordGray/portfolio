@@ -1,10 +1,10 @@
-import { state } from "../../global-constants";
-import { Sprite } from "./sprite";
+import { state } from '../../global-constants';
+import { Sprite } from './sprite';
 
-export class Dialog extends Sprite {
+export abstract class Dialog extends Sprite {
   #requestAnimationFrame: number;
   container: HTMLElement;
-  onClose;
+  onClose: (args: any) => void;
 
   numberOfColumns: number;
   numberOfRows: number;
@@ -40,7 +40,7 @@ export class Dialog extends Sprite {
     return this.canvas.height / this.numberOfRows;
   }
 
-  close(args?) {
+  close(args?: any): void {
     if (!this.#requestAnimationFrame) return;
     window.cancelAnimationFrame(this.#requestAnimationFrame);
 
@@ -51,16 +51,14 @@ export class Dialog extends Sprite {
     this.onClose(args);
   }
 
-  destroyContent() {
-    throw new Error("Method not implemented");
-  }
+  abstract destroyContent(): void
 
-  draw() {
+  override draw(): void {
     this.#requestAnimationFrame = window.requestAnimationFrame(this.draw.bind(this));
 
-    this.ctx.fillStyle = "white";
+    this.ctx.fillStyle = 'white';
     this.ctx.fillRect(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight);
-    this.ctx.fillStyle = "black";
+    this.ctx.fillStyle = 'black';
     this.ctx.lineWidth = 2;
 
     this.ctx.strokeRect(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight);
@@ -69,7 +67,7 @@ export class Dialog extends Sprite {
     this.ctx.strokeRect(this.dialogLeft + 8, this.dialogTop + 10, this.dialogWidth - 16, this.dialogHeight - 18);
   }
 
-  open(args) {
+  open(args: any): this {
     this.setupContentContainer();
     this.setupContent(args);
 
@@ -78,14 +76,12 @@ export class Dialog extends Sprite {
     return this;
   }
 
-  setupContent(args) {
-    throw new Error("Method not implemented");
-  };
+  abstract setupContent(args: any): void;
 
-  setupContentContainer() {
+  setupContentContainer(): void {
     if (this.container) return;
-    const div = document.createElement("div");
-    div.style.position = "absolute";
+    const div = document.createElement('div');
+    div.style.position = 'absolute';
 
     div.style.display = `flex`;
     div.style.flexDirection = `column`;
@@ -94,9 +90,9 @@ export class Dialog extends Sprite {
     div.style.top = `${ this.dialogTop + 10 + (this.padding / 2) }px`;
     div.style.width = `${ this.dialogWidth - this.padding }px`;
     div.style.height = `${ this.dialogHeight - this.padding - 1 }px`;
-    div.style.fontSize = "24px";
+    div.style.fontSize = '24px';
 
-    document.querySelector("body")?.appendChild(div);
+    document.querySelector('body')?.appendChild(div);
     this.container = div;
   }
 }
