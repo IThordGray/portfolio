@@ -15,7 +15,6 @@ export class MainMap extends GameMap {
   static #bgSprite: BackgroundSprite;
   static #fgSprite: ForegroundSprite;
   static #boundarySprites: BoundarySprite[];
-  static #npcSprites: NpcSprite[];
 
   constructor(args = { spawnCoordinate: { x: -590, y: -345 }, direction: 'down' }) {
     super(args);
@@ -49,12 +48,12 @@ export class MainMap extends GameMap {
   }
 
   override getNPCs(): NpcSprite[] {
-    const position: ICoordinate = { x: -1280, y: -340 };
+    const position: ICoordinate = { x: -1240, y: -340 };
     const path: ICoordinate[] = [
-      { x: -1280, y: -340 },
+      { x: -1240, y: -340 },
       { x: -1060, y: -340 },
       { x: -1060, y: -440 },
-      { x: -1280, y: -440 }
+      { x: -1240, y: -440 }
     ];
 
     const oldMan = new OldManSprite({
