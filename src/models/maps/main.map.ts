@@ -11,29 +11,41 @@ import { OldManSprite } from '../sprites/old-man.sprite';
 import { GameMap } from './game-map';
 
 export class MainMap extends GameMap {
-  constructor(args = { spawnCoordinate: { x: -590, y: -340 }, direction: 'down' }) {
+
+  static #bgSprite: BackgroundSprite;
+  static #fgSprite: ForegroundSprite;
+  static #boundarySprites: BoundarySprite[];
+  static #npcSprites: NpcSprite[];
+
+  constructor(args = { spawnCoordinate: { x: -590, y: -345 }, direction: 'down' }) {
     super(args);
   }
 
   override getBackground(): BackgroundSprite {
-    return new BackgroundSprite({
+    MainMap.#bgSprite ??= new BackgroundSprite({
       src: 'assets/background.png',
       position: this.offset
     });
+
+    return MainMap.#bgSprite;
   }
 
   override getBoundaries(): BoundarySprite[] {
-    return this.convertCollisionsToBoundaries({
+    MainMap.#boundarySprites ??= this.convertCollisionsToBoundaries({
       collisions: MAIN_MAP_COLLISIONS,
       transitions: MAIN_MAP_TRANSITIONS
     }, 70, transitionValue => mapTransitions[transitionValue], 4);
+
+    return MainMap.#boundarySprites;
   }
 
   override getForeground(): ForegroundSprite {
-    return new ForegroundSprite({
+    MainMap.#fgSprite ??= new ForegroundSprite({
       src: 'assets/foreground.png',
       position: this.offset
     });
+
+    return MainMap.#fgSprite;
   }
 
   override getNPCs(): NpcSprite[] {

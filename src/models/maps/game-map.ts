@@ -9,7 +9,8 @@ import { PlayerSprite } from '../sprites/player.sprite';
 import { Sprite } from '../sprites/sprite';
 
 export abstract class GameMap {
-  readonly #playerSprite: PlayerSprite;
+  static #playerSprite: PlayerSprite;
+
   readonly #bgSprite: BackgroundSprite;
   readonly #fgSprite: ForegroundSprite;
   readonly #boundaries: BoundarySprite[] = [];
@@ -22,21 +23,27 @@ export abstract class GameMap {
   offset: ICoordinate;
   paused = true;
 
+  get player() {
+    return GameMap.#playerSprite;
+  }
+
   get position() {
     return this.#bgSprite?.position;
   }
 
   protected constructor({ spawnCoordinate, direction }) {
     this.offset = { ...spawnCoordinate };
-    this.#playerSprite = new PlayerSprite({ direction, speed: this.moveSpeed });
+
+    GameMap.#playerSprite ??= new PlayerSprite({ direction, speed: this.moveSpeed });
+
     this.#bgSprite = this.getBackground();
     this.#fgSprite = this.getForeground();
     this.#boundaries = this.getBoundaries();
     this.#npcs = this.getNPCs();
 
     const offset = position => {
-      position.x = this.#playerSprite.position.x + (position.x - this.offset.x) * -1;
-      position.y = this.#playerSprite.position.y + (position.y - this.offset.y) * -1;
+      position.x = (state.canvas.width / 2) + (position.x - this.offset.x) * -1;
+      position.y = (state.canvas.height / 2) + (position.y - this.offset.y) * -1;
     };
 
     this.#npcs.forEach(npc => {
@@ -62,7 +69,7 @@ export abstract class GameMap {
       const hOffset = hDirection === 0 ? 0 : npc.speed * (hDirection / Math.abs(hDirection));
       const vOffset = vDirection === 0 ? 0 : npc.speed * (vDirection / Math.abs(vDirection));
 
-      if (checkCollide(npc, this.#playerSprite, hOffset, vOffset)) {
+      if (checkCollide(npc, this.player, hOffset, vOffset)) {
         npc.spriteAnimation?.stop();
         if (!npc.interacting) await npc.onInteractAsync?.();
         return;
@@ -85,13 +92,13 @@ export abstract class GameMap {
   }
 
   #animatePlayer(): void {
-    this.#playerSprite.spriteAnimation?.stop();
+    this.player.spriteAnimation?.stop();
 
     if (inputController.vertical !== 0) {
 
       let collidingBoundary: BoundarySprite | null = null;
       for (const boundary of this.#boundaries) {
-        collidingBoundary = boundary.getCollide(this.#playerSprite, { vOffset: inputController.vertical * this.#playerSprite.speed });
+        collidingBoundary = boundary.getCollide(this.player, { vOffset: inputController.vertical * this.player.speed });
         if (collidingBoundary) break;
       }
 
@@ -103,23 +110,23 @@ export abstract class GameMap {
         new mapExpression();
         return;
       }
-      this.#playerSprite.setSprite(inputController.vertical > 0 ? 'up' : 'down');
-      this.#playerSprite.spriteAnimation?.start();
+      this.player.setSprite(inputController.vertical > 0 ? 'up' : 'down');
+      this.player.spriteAnimation?.start();
       this.#movableSprites.forEach(x => {
-        x.position.y += inputController.vertical * this.#playerSprite.speed;
-        if (x instanceof NpcSprite) x.path.forEach(p => p.y += inputController.vertical * this.#playerSprite.speed);
+        x.position.y += inputController.vertical * this.player.speed;
+        if (x instanceof NpcSprite) x.path.forEach(p => p.y += inputController.vertical * this.player.speed);
       });
     }
 
     if (inputController.horizontal !== 0) {
-      const willCollide = this.#boundaries.some(x => x.type === 'collision' && x.getCollide(this.#playerSprite, { hOffset: inputController.horizontal * this.#playerSprite.speed }));
+      const willCollide = this.#boundaries.some(x => x.type === 'collision' && x.getCollide(this.player, { hOffset: inputController.horizontal * this.player.speed }));
       if (willCollide) return;
 
-      this.#playerSprite.setSprite(inputController.horizontal > 0 ? 'right' : 'left');
-      this.#playerSprite.spriteAnimation?.start();
+      this.player.setSprite(inputController.horizontal > 0 ? 'right' : 'left');
+      this.player.spriteAnimation?.start();
       this.#movableSprites.forEach(x => {
-        x.position.x -= inputController.horizontal * this.#playerSprite.speed;
-        if (x instanceof NpcSprite) x.path.forEach(p => p.x -= inputController.horizontal * this.#playerSprite.speed);
+        x.position.x -= inputController.horizontal * this.player.speed;
+        if (x instanceof NpcSprite) x.path.forEach(p => p.x -= inputController.horizontal * this.player.speed);
       });
     }
 
@@ -143,15 +150,23 @@ export abstract class GameMap {
     collection.push(b);
   }
 
+  private getPlayerSprite(direction): PlayerSprite {
+    if (!GameMap.#playerSprite) {
+      GameMap.#playerSprite = new PlayerSprite({ direction, speed: this.moveSpeed });
+    }
+
+    return GameMap.#playerSprite;
+  }
+
   animate(): void {
     this.#animationFrameId = window.requestAnimationFrame(this.animate.bind(this));
 
     if (!this.#bgSprite) return;
-    if (!this.#playerSprite) return;
+    if (!this.player) return;
     if (!this.#fgSprite) return;
 
     this.#bgSprite.draw();
-    this.#playerSprite.draw();
+    this.player.draw();
     this.#fgSprite.draw();
     this.#boundaries?.forEach(boundary => boundary.draw());
     this.#npcs?.forEach(npc => npc.draw());

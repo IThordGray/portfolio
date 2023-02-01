@@ -1,13 +1,17 @@
 import { Sprites } from '../../abstractions/sprites.type';
 import { state } from '../../global-constants';
-import { CharacterSprite } from './character.sprite';
+import { CharacterSprite, ICharacterSpriteOptions } from './character.sprite';
+
+export type IPlayerSpriteOptions = ICharacterSpriteOptions;
 
 export class PlayerSprite extends CharacterSprite {
-  constructor(args) {
+  constructor(args: IPlayerSpriteOptions) {
     super(args);
 
-    this.position.x = state.canvas.width / 2 - this.width / 2;
-    this.position.y = state.canvas.height / 2 - this.height / 2;
+    this.img.onload = () => {
+      this.position.x = state.canvas.width / 2 - this.width / 2;
+      this.position.y = state.canvas.height / 2 - this.height / 2;
+    };
   }
 
   override getSprites(): Sprites {
