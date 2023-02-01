@@ -1,8 +1,8 @@
 import { CharacterSprite } from "./character.sprite";
 
-export class NpcSprite extends CharacterSprite {
-  #path;
-  #onInteractAsync;
+export abstract class NpcSprite extends CharacterSprite {
+  readonly #path;
+  readonly #onInteractAsync;
   #interacting = false;
 
   get interacting() {
@@ -17,7 +17,7 @@ export class NpcSprite extends CharacterSprite {
     return this.#path;
   }
 
-  constructor(args) {
+  protected constructor(args) {
     super(args);
 
     this.#path = args.path;

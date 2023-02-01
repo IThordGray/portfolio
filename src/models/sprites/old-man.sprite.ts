@@ -1,3 +1,4 @@
+import { Sprites } from "../../abstractions/sprites.type";
 import { NpcSprite } from "./npc.sprite";
 
 export class OldManSprite extends NpcSprite {
@@ -5,7 +6,7 @@ export class OldManSprite extends NpcSprite {
     super(args);
   }
 
-  getSprites() {
+  getSprites(): Sprites {
     return {
       up: "assets/oldManUp.png",
       right: "assets/oldManRight.png",

@@ -1,11 +1,16 @@
+import { Direction } from "../../abstractions/direction.type";
+import { Sprites } from "../../abstractions/sprites.type";
 import { SpriteAnimation } from "../../compositions/sprite-animation";
 import { state } from "../../global-constants";
 import { ImageSprite } from "./image.sprite";
 
-export class CharacterSprite extends ImageSprite {
+type SpriteImages = Record<Direction, HTMLImageElement>;
+
+export abstract class CharacterSprite extends ImageSprite {
+  #spriteImages: SpriteImages;
   #sprites = this.getSprites();
-  #speed;
-  #direction;
+  #speed: number;
+  #direction: Direction;
   spriteAnimation;
 
   get speed() {
@@ -16,12 +21,20 @@ export class CharacterSprite extends ImageSprite {
     return super.top + (this.height / 2);
   }
 
-  constructor(args) {
+  protected constructor(args) {
     super({ ...args, frames: 4 });
 
-    this.#direction = args.direction ?? "down";
     this.#speed = args.speed;
-    this.src = this.#sprites[this.#direction];
+    // this.src = this.#sprites[this.#direction];
+
+    this.#spriteImages = {} as SpriteImages;
+    for (const [ direction, src ] of Object.entries(this.getSprites())) {
+      this.#spriteImages[direction] = new Image();
+      this.#spriteImages[direction].src = src;
+    }
+
+    this.setSprite(args.direction ?? "down");
+
   }
 
   draw() {
@@ -52,12 +65,14 @@ export class CharacterSprite extends ImageSprite {
     this.spriteAnimation?.increaseTick();
   }
 
-  getSprites() {
-  }
+  abstract getSprites(): Sprites;
 
   setSprite(direction) {
     if (this.#direction === direction) return;
-    this.img.src = this.#sprites[direction];
+
+    this.img = this.#spriteImages[direction];
     this.#direction = direction;
+    this.width = this.img.width / this.maxFrames;
+    this.height = this.img.height;
   }
 }
