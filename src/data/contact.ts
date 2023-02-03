@@ -5,16 +5,28 @@ CONTACT.style.display = 'flex';
 CONTACT.style.flexDirection = 'column';
 CONTACT.style.height = '100%';
 
-const contactForm = document.querySelector('.contact-form-container');
+const contactFormContainer = document.querySelector('.contact-form-container');
 
 document.getElementById('contact-form').addEventListener('reset', function (event) {
   event.preventDefault();
   state.closeAllDialogs();
 });
 
-document.getElementById('contact-form').addEventListener('submit', function (event) {
+const contactForm = document.getElementById('contact-form');
+
+contactForm.addEventListener('submit', function (event) {
   event.preventDefault();
-  alert('Form submitted!');
+  const formData = new FormData(event.target as HTMLFormElement);
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', '/submit');
+
+  const data = { };
+  formData.forEach((v, k) => {
+    data[k] = v;
+  });
+
+  xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+  xhr.send(JSON.stringify(data));
 });
 
-CONTACT.appendChild(contactForm);
+CONTACT.appendChild(contactFormContainer);

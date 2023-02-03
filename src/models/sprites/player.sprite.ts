@@ -13,7 +13,6 @@ export class PlayerSprite extends CharacterSprite {
       this.height = this.img.height;
       this.position.x = state.canvas.width / 2 - this.width / 2;
       this.position.y = state.canvas.height / 2 - this.height / 2;
-      console.log(this.width, this.height);
     };
   }
 
