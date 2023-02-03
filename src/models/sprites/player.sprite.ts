@@ -9,8 +9,11 @@ export class PlayerSprite extends CharacterSprite {
     super(args);
 
     this.img.onload = () => {
+      this.width = this.img.width / this.maxFrames;
+      this.height = this.img.height;
       this.position.x = state.canvas.width / 2 - this.width / 2;
       this.position.y = state.canvas.height / 2 - this.height / 2;
+      console.log(this.width, this.height);
     };
   }
 

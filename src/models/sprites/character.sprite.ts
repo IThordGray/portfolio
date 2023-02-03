@@ -75,7 +75,5 @@ export abstract class CharacterSprite extends ImageSprite {
 
     this.img = this.#spriteImages[direction];
     this.#direction = direction;
-    this.width = this.img.width / this.maxFrames;
-    this.height = this.img.height;
   }
 }
