@@ -1,3 +1,4 @@
+import { round5 } from '../../abstractions/round-5.helper';
 import { Sprites } from '../../abstractions/sprites.type';
 import { state } from '../../global-constants';
 import { CharacterSprite, ICharacterSpriteOptions } from './character.sprite';
@@ -11,8 +12,8 @@ export class PlayerSprite extends CharacterSprite {
     this.img.onload = () => {
       this.width = this.img.width / this.maxFrames;
       this.height = this.img.height;
-      this.position.x = state.canvas.width / 2 - this.width / 2;
-      this.position.y = state.canvas.height / 2 - this.height / 2;
+      this.position.x = round5(state.canvas.width / 2 - this.width / 2);
+      this.position.y = round5(state.canvas.height / 2 - this.height / 2);
     };
   }
 

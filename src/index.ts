@@ -1,3 +1,4 @@
+import { round5 } from './abstractions/round-5.helper';
 import { ABOUT } from './data/about';
 import { CONTACT } from './data/contact';
 import { SKILLS } from './data/skills';
@@ -5,8 +6,9 @@ import { mapTransitions, state } from './global-constants';
 import { HouseMap } from './models/maps/house.map';
 import { MainMap } from './models/maps/main.map';
 
-const HEIGHT = 850;
-const WIDTH = 1600;
+const HEIGHT = round5(window.innerHeight);
+const WIDTH = round5(window.innerWidth - 300);
+
 
 
 function main() {
@@ -41,6 +43,11 @@ function main() {
       if (item.value === 'git') window.open('https://github.com/IThordGray', '_blank');
     });
   });
+
+  window.onresize = () => {
+    canvas.height =  round5(window.innerHeight);
+    canvas.width = round5(window.innerWidth - 300);
+  }
 }
 
 main();

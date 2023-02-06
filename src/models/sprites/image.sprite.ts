@@ -9,6 +9,8 @@ export abstract class ImageSprite extends Sprite {
   readonly #maxFrames: number;
   img = new Image();
 
+  onLoad: () => void;
+
   get maxFrames() {
     return this.#maxFrames;
   }
@@ -24,5 +26,9 @@ export abstract class ImageSprite extends Sprite {
 
     this.#maxFrames = args?.frames ?? 1;
     if (args.src) this.src = args.src;
+
+    this.img.onload = () => this.onLoad?.();
   }
+
+
 }

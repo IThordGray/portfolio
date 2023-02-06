@@ -1,10 +1,10 @@
+import { ICoordinate } from '../../abstractions/coord';
 import { HOUSE_MAP_COLLISIONS } from '../../data/house1.collisions';
 import { HOUSE_MAP_TRANSITIONS } from '../../data/house1.transitions';
 import { mapTransitions } from '../../global-constants';
 import { BackgroundSprite } from '../sprites/background.sprite';
 import { BoundarySprite } from '../sprites/boundary.sprite';
 import { ForegroundSprite } from '../sprites/foreground.sprite';
-import { NpcSprite } from '../sprites/npc.sprite';
 import { GameMap } from './game-map';
 
 export class HouseMap extends GameMap {
@@ -12,14 +12,14 @@ export class HouseMap extends GameMap {
   static #fgSprite: ForegroundSprite;
   static #boundarySprites: BoundarySprite[];
 
-  constructor(args = { spawnCoordinate: { x: 420, y: -95 }, direction: 'up' }) {
+  constructor(args = { direction: 'up' }) {
     super(args);
   }
 
   override getBackground(): BackgroundSprite {
     HouseMap.#bgSprite ??= new BackgroundSprite({
       src: 'assets/house_background.png',
-      position: this.offset
+      position: this.getSpawnCoords()
     });
 
     return HouseMap.#bgSprite;
@@ -37,9 +37,15 @@ export class HouseMap extends GameMap {
   override getForeground(): ForegroundSprite {
     HouseMap.#fgSprite ??= new ForegroundSprite({
       src: 'assets/house_foreground.png',
-      position: this.offset
+      position: this.getSpawnCoords()
     });
 
     return HouseMap.#fgSprite;
+  }
+
+  getSpawnCoords(): ICoordinate {
+    const x = 420;
+    const y = -95;
+    return { x, y };
   }
 }

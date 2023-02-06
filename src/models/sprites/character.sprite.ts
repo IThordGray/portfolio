@@ -32,12 +32,17 @@ export abstract class CharacterSprite extends ImageSprite {
     this.#speed = args.speed;
 
     this.#spriteImages = {} as SpriteImages;
+    let loaded = [];
     for (const [ direction, src ] of Object.entries(this.getSprites())) {
       this.#spriteImages[direction] = new Image();
       this.#spriteImages[direction].src = src;
+      loaded.push(new Promise<void>(res => {
+        this.#spriteImages[direction].onload = () => res();
+      }));
     }
 
     this.setSprite(args.direction ?? 'down');
+    Promise.all(loaded).then(() => this.onLoad());
   }
 
   override draw(): void {

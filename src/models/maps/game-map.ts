@@ -1,4 +1,5 @@
 import { ICoordinate } from '../../abstractions/coord';
+import { round5 } from '../../abstractions/round-5.helper';
 import { checkCollide, inputController, state } from '../../global-constants';
 import { BackgroundSprite } from '../sprites/background.sprite';
 import { BoundarySprite } from '../sprites/boundary.sprite';
@@ -31,8 +32,8 @@ export abstract class GameMap {
     return this.#bgSprite?.position;
   }
 
-  protected constructor({ spawnCoordinate, direction }) {
-    this.offset = { ...spawnCoordinate };
+  protected constructor({ direction }) {
+    this.offset = this.getSpawnCoords();
 
     GameMap.#playerSprite ??= new PlayerSprite({ direction, speed: this.moveSpeed });
 
@@ -41,14 +42,21 @@ export abstract class GameMap {
     this.#boundaries = this.getBoundaries();
     this.#npcs = this.getNPCs();
 
-    const offset = position => {
-      position.x = (state.canvas.width / 2) + (position.x - this.offset.x) * -1;
-      position.y = (state.canvas.height / 2) + (position.y - this.offset.y) * -1;
+    // Position is calculated to top left corner.
+    // The map also uses the point to calculate offset.
+    // If the show (-1285; -500) will place npc in the top left corner if not offset.
+    const offset = (position, npc: NpcSprite) => {
+      const centerX = round5((state.canvas.width / 2) - ((npc.width ?? 0) / 2));
+      const centerY = round5((state.canvas.height / 2) - ((npc.height ?? 0) / 2));
+      position.x = centerX + (position.x - this.getSpawnCoords().x) * -1;
+      position.y = centerY + (position.y - this.getSpawnCoords().y) * -1;
     };
 
     this.#npcs.forEach(npc => {
-      offset(npc.position);
-      npc.path.forEach(path => offset(path));
+      npc.onLoad = () => {
+        offset(npc.position, npc);
+        npc.path.forEach(path => offset(path, npc));
+      };
     });
 
     this.#movableSprites = [ this.#bgSprite, this.#fgSprite, ...this.#boundaries, ...this.#npcs ];
@@ -145,8 +153,8 @@ export abstract class GameMap {
 
     const meta = type === 'transition' ? { map: transitionMapper?.(boundaryValue) } : undefined;
     const b = new BoundarySprite({ multiplier, type, meta });
-    b.position.x = columnNumber * b.width + this.offset.x;
-    b.position.y = rowNumber * b.height + this.offset.y;
+    b.position.x = columnNumber * b.width + this.getSpawnCoords().x;
+    b.position.y = rowNumber * b.height + this.getSpawnCoords().y;
     collection.push(b);
   }
 
@@ -220,5 +228,7 @@ export abstract class GameMap {
   getNPCs(): NpcSprite[] {
     return [];
   }
+
+  abstract getSpawnCoords(): ICoordinate;
 }
 
